@@ -1,19 +1,16 @@
----
-title: "Reproducible Research: Peer Assessment 1"
-output: 
-  html_document:
-    keep_md: true
----
+# Reproducible Research: Peer Assessment 1
 
 
 ## Loading and preprocessing the data
-```{r,echo=TRUE}
+
+```r
 dat<-read.csv('activity.csv',header=TRUE,sep=",",na.strings=as.character(NA))
 dat$date<-as.Date(dat$date,'%Y-%m-%d')
 ```
 
 ## What is mean total number of steps taken per day?
-```{r,echo=TRUE}
+
+```r
 #Remove 'NA'from data:
 newdata<-dat[which(dat$steps != 'NA'),]
 
@@ -28,17 +25,31 @@ for(i in 1:length(byDates)){
 
 #Plot of total number of steps taken per day:
 plot(summ~dateUnique,col='Red',ylab='Sum of Steps Taken',xlab='Date')
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-1.png) 
+
+```r
 #Hist of total number of steps taken per day:
 hist(summ,col='red',breaks=length(dateUnique),xlab='Sum of Steps',
         main='Steps Taken Per Day')
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-2-2.png) 
+
+```r
 #Mean and Median of the total number of steps taken per day:
 summary(summ)
 ```
 
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    8841   10760   10770   13290   21190
+```
+
 ## What is the average daily activity pattern?
-```{r,echo=TRUE}
+
+```r
 #Split data into different data.frames based on intervals:
 byIntervals <- split(newdata,f=newdata$interval)
 
@@ -51,11 +62,21 @@ for(i in 1:length(intervalUniq)){
 #Time series plot of 5 minute interval vs. average number of steps taken:
 plot(intervalUniq,averSteps,type='l',col='red',xlab='5 Minute Intervals',
      ylab='Average Number of Steps',main='Average Steps Across all 61 Days')
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-3-1.png) 
+
+```r
 #Determine time interval for max(averSteps):
 Max<-max(averSteps);INDEX<-which(averSteps==Max,arr.ind=TRUE)
 intervalUniq[INDEX]
+```
 
+```
+## [1] 835
+```
+
+```r
 #So, 8:30-8:35 am has, on average, the most number of steps!
 
 #Note that above I used the data with the 'NA' values omitted. Attempting to plot with
@@ -65,13 +86,19 @@ intervalUniq[INDEX]
 
 
 ## Imputing missing values
-```{r, echo=TRUE}
 
+```r
 #Total number of missing values in the dataset:
 newdata<-dat[which(dat$steps != 'NA'),]
 Dim1<-dim(dat);Dim2<-dim(newdata)
 total_NA<-Dim1[1]-Dim2[1];total_NA
+```
 
+```
+## [1] 2304
+```
+
+```r
 #Determine location of "NA" in data and replace by mean for 5 minute interval:
 for(i in 1:Dim1[1]){
         if(is.na(dat[i,1])==TRUE){
@@ -92,9 +119,21 @@ for(i in 1:length(byDates)){
 #Hist of total number of steps taken each day:
 hist(Summ,col='blue',breaks=length(dateUnique),xlab='Sum of Steps',
         main='Steps Taken Per Day')
+```
 
+![](PA1_template_files/figure-html/unnamed-chunk-4-1.png) 
+
+```r
 #Mean and Median of the total number of steps taken per day:
 summary(Summ)
+```
+
+```
+##    Min. 1st Qu.  Median    Mean 3rd Qu.    Max. 
+##      41    9819   10770   10770   12810   21190
+```
+
+```r
 #Yes, the values in this summary report differ from the summary report from the first part of assign.
 #We see that the impact of replacing the "NA" step values in 'dat' with average steps of intervals 
 #is that the mean=median which implies that the data becomes more normally distributed.
@@ -103,7 +142,8 @@ summary(Summ)
 
 
 ## Are there differences in activity patterns between weekdays and weekends?
-```{r,echo=TRUE}
+
+```r
 library(chron)
 
 #Adds boolean column to 'dat' which returns True if date is weekend, false otherwise:
@@ -145,7 +185,7 @@ plot(intervalUniq,AverSteps,type='l',col='red',xlab='5 Minute Intervals',
      ylab='Average Number of Steps',main='Average Steps Across all weekend')
 plot(intervalUniq,AverSteps2,type='l',col='blue',xlab='5 Minute Intervals',
      ylab='Average Number of Steps',main='Average Steps Across all weekdays')
-
-
 ```
+
+![](PA1_template_files/figure-html/unnamed-chunk-5-1.png) 
 
